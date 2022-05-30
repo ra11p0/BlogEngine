@@ -1,0 +1,14 @@
+﻿@model BlogEngine.ViewModels.Blog.CreateViewModel
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Create blog.</div>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-controller="Blog" asp-action="Create">
+            <div class="alert-danger" asp-validation-summary="All"></div>
+            <input asp-for="BlogName" class="form-control" placeholder="Blog name"/>
+            <input asp-for="Description" class="form-control" placeholder="Description"/>
+            <button type="submit" class="btn btn-outline-success btn-sm">Confirm</button>
+        </form>
+    </div>
+</div>

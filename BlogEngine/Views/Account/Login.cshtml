@@ -1,0 +1,17 @@
+﻿@model BlogEngine.ViewModels.Account.LoginViewModel
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title"> Login: </div>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-action="Login" asp-controller="Account">
+            <div class="alert-danger" asp-validation-summary="All"></div>
+            <input asp-for="Login" class="form-control" placeholder="Login"/>
+            <input asp-for="Password" class="form-control" placeholder="Password" type="password"/>
+            <button type="submit" class="btn btn-outline-success btn-sm">Login</button>
+            <button type="button" class="btn btn-outline-info btn-sm">Register</button>
+        </form>
+    </div>
+
+</div>

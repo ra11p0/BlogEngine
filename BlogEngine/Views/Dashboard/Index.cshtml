@@ -1,0 +1,16 @@
+﻿@model BlogEngine.ViewModels.Dashboard.IndexViewModel
+<div class="h1"> Dashboard</div>
+<div class="btn-group">
+    <a class="btn btn-sm btn-outline-primary" asp-action="Create" asp-controller="Blog">Create new blog</a>
+</div>
+<div class="list-group">
+    @foreach (var blog in Model.Blogs)
+    {
+        <div class="list-group-item">
+            <div class="text-info">
+                @blog.BlogName
+            </div>
+            <a class="link-primary" asp-action="Index" asp-controller="Blog" asp-route-blogId="@blog.BlogId">Visit</a>
+        </div>
+    }
+</div>

@@ -1,0 +1,19 @@
+﻿@model BlogEngine.ViewModels.Home.IndexViewModel
+<div class="h1"> My sweet blog</div>
+<div class="list-group">
+    @foreach (var blog in Model.Blogs)
+    {
+        <div class="list-group-item">
+            <div class="text-capitalize">
+                @blog.BlogName
+            </div>
+            <div class="text-info">
+                @blog.Description
+            </div>
+            <div class="text-dark">
+                Visited @blog.Views times!
+            </div>
+            <a class="link-primary" asp-action="Index" asp-controller="Blog" asp-route-blogId="@blog.BlogId">Visit</a>
+        </div>
+    }
+</div>
