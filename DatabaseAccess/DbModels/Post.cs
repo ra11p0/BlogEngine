@@ -15,6 +15,7 @@ namespace DatabaseAccess.DbModels
         public string PostText { get; set; }
         public IEnumerable<Comment> Comments { get; set; }
         public User Owner { get; set; }
+        public Blog OwningBlog { get; set; }
         public int Views { get; set; }
     }
 }

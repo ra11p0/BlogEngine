@@ -18,12 +18,16 @@ namespace BlogEngine.Controllers
             _context = context;
             _userManager = userManager;
         }
-        public IActionResult Index(int blogId)
+        public async Task<IActionResult> Index(int blogId)
         {
+
             var blog = new GetBlogService(_context).GetBlog(blogId);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var editable = user==null ? false : blog.Owner.Id == user.Id;
             return View(new IndexViewModel()
             {
-                Blog = blog!
+                Blog = blog!,
+                Editable = editable
             });
         }
         public IActionResult Create()

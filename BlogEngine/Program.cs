@@ -2,7 +2,6 @@ using DatabaseAccess;
 using DatabaseAccess.DbModels;
 using Identity;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,6 +44,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute("Blog", "Blog/{blogId:int}", new { Controller = "Blog", Action = "Index" });
+app.MapControllerRoute("Post", "Post/{postId:int}", new { Controller = "Post", Action = "Index" });
+app.MapControllerRoute("PostCreate", "Post/Create/{owningBlogId:int}", new { Controller = "Post", Action = "Create" });
 app.MapControllerRoute("BlogCreate", "Blog/Create", new { Controller = "Blog", Action = "Create" });
 
 app.MapDefaultControllerRoute();

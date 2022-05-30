@@ -7,5 +7,34 @@
         <div class="text-info">
             @Model.Blog.Description
         </div>
+        <div class="text-info">
+            Author: @Model.Blog.Owner.UserName
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="text-dark h4">Posts:</div>
+        @if (Model.Editable)
+        {
+            <a class="btn btn-success btn-sm"
+                    asp-controller="Post"
+                    asp-action="Create"
+                    asp-route-owningBlogId="@Model.Blog.BlogId">
+                Add new post
+            </a>
+        }
+        <div class="list-group">
+            @foreach (var post in Model.Blog.Posts)
+            {
+                <div class="list-group-item">
+                    <div class="offcanvas-title">
+                        @post.Title
+                    </div>
+                    <div class="text-dark">
+                        @post.PostText.Substring(0, 50)...
+                    </div>
+                    <a asp-controller="Post" asp-action="Index" asp-route-postId="@post.PostId">Go to post...</a>
+                </div>
+            }
+        </div>
     </div>
 </div>

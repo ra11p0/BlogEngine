@@ -1,0 +1,15 @@
+﻿@model BlogEngine.ViewModels.Post.CreateViewModel
+<div class="card">
+    <div class="card-header">
+        <div class="card-title"> Create new post</div>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-controller="Post" asp-action="Create">
+            <div class="alert-danger" asp-validation-summary="All"></div>
+            <input asp-for="OwningBlogId" type="hidden" value="@Model.OwningBlogId"/>
+            <input asp-for="Title" class="form-control" placeholder="Title"/>
+            <input asp-for="PostText" class="form-control" placeholder="Content"/>
+            <input type="submit" class="btn btn-sm btn-outline-success"/>
+        </form>
+    </div>
+</div>

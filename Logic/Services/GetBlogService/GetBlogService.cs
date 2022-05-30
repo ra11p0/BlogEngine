@@ -1,5 +1,6 @@
 ﻿using DatabaseAccess;
 using DatabaseAccess.DbModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Logic.Services.GetBlogService
 {
@@ -17,7 +18,10 @@ namespace Logic.Services.GetBlogService
         }
         public Blog? GetBlog(int id)
         {
-            return _context.Blogs.FirstOrDefault(e => e.BlogId == id);
+            return _context.Blogs
+                .Include(e=>e.Posts)
+                .Include(e=>e.Owner)
+                .FirstOrDefault(e => e.BlogId == id);
         }
     }
 }
