@@ -1,5 +1,25 @@
-﻿@model BlogEngine.ViewModels.Post.IndexViewModel
+﻿@using BlogEngine.ViewModels.Post.Partial
+@using DatabaseAccess.DbModels
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model BlogEngine.ViewModels.Post.IndexViewModel
 <h1>Post: @Model.Post.Title</h1>
 <p>
     @Model.Post.PostText
 </p>
+<form method="post" asp-controller="Post" asp-action="Rate" asp-route-_postId="@Model.Post.PostId" asp-route-reaction="@Reactions.Liked">
+    Liked @Model.Liked times! <input type="submit" class="link-success" value="Like">
+</form>
+<form method="post" asp-controller="Post" asp-action="Rate" asp-route-_postId="@Model.Post.PostId" asp-route-reaction="@Reactions.Disliked">
+    Disliked @Model.Disliked times!<input type="submit" class="link-danger" value="Dislike">
+</form>
+
+<partial name="Partial/CommentCreator" model="new CommentCreatorViewModel(){CommendableId = Model.Post.PostId}"/>
+<div class="list-group">
+    <div class="offcanvas-title"> Comments</div>
+    @foreach (var comment in Model.CommentsDtos)
+    {
+        <div class="list-group-item">
+            <partial name="Partial/Comment" model="comment"/>
+        </div>
+    }
+</div>

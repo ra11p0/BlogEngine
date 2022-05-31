@@ -1,0 +1,13 @@
+﻿@model BlogEngine.ViewModels.Post.Partial.CommentCreatorViewModel
+<div class="card">
+    <div class="card-header">
+        <div class="card-title"> Leave a comment:</div>
+    </div>
+    <div class="card-body">
+        <form asp-controller="Post" asp-action="Comment" method="post">
+            <input asp-for="CommendableId" type="hidden" value="@Model.CommendableId"/>
+            <input asp-for="CommentText" class="form-control"/>
+            <button type="submit">Submit!</button>
+        </form>
+    </div>
+</div>

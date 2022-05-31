@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DatabaseAccess.DbModels
 {
@@ -11,6 +7,7 @@ namespace DatabaseAccess.DbModels
     {
         public int RateId { get; set; }
         public Reactions Reaction { get; set; }
-        public User Owner { get; set; }
+        [Required]
+        public string OwnerId { get; set; }
     }
 }

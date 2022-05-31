@@ -1,5 +1,7 @@
 ﻿using BlogEngine.ViewModels.Account;
+using DatabaseAccess;
 using DatabaseAccess.DbModels;
+using Logic.Services.AddUserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,11 +10,13 @@ namespace BlogEngine.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly BlogDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(BlogDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
         {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
         }
@@ -40,6 +44,7 @@ namespace BlogEngine.Controllers
                     if ((await _signInManager.PasswordSignInAsync(user, registerViewModel.Password, false, false))
                         .Succeeded)
                     {
+                        new AddUserService(_context).AddUser(user);
                         return Redirect("/Dashboard");
                     }
 

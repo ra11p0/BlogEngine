@@ -8,20 +8,17 @@ namespace Logic.Services.GetBlogService
     {
         Blog? GetBlog(int id);
     }
-    public class GetBlogService : IGetBlogService
+    public class GetBlogService :ServiceTemplate, IGetBlogService
     {
-        private readonly BlogDbContext _context;
-
-        public GetBlogService(BlogDbContext context)
-        {
-            _context = context;
-        }
         public Blog? GetBlog(int id)
         {
-            return _context.Blogs
+            return Context.Blogs
                 .Include(e=>e.Posts)
-                .Include(e=>e.Owner)
                 .FirstOrDefault(e => e.BlogId == id);
+        }
+
+        public GetBlogService(BlogDbContext context) : base(context)
+        {
         }
     }
 }

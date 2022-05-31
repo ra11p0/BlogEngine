@@ -8,7 +8,7 @@
             @Model.Blog.Description
         </div>
         <div class="text-info">
-            Author: @Model.Blog.Owner.UserName
+            Author: @Model.AuthorName
         </div>
     </div>
     <div class="card-body">
@@ -28,11 +28,17 @@
                 <div class="list-group-item">
                     <div class="offcanvas-title">
                         @post.Title
+                        @if (Model.Editable)
+                        {
+                            <form method="post" asp-controller="Post" asp-action="Remove" asp-route-_blogId="@Model.Blog.BlogId" asp-route-postId="@post.PostId">
+                                <input type="submit" class="link-danger" value="Remove">
+                            </form>
+                        }
                     </div>
                     <div class="text-dark">
                         @post.PostText.Substring(0, 50)...
                     </div>
-                    <a asp-controller="Post" asp-action="Index" asp-route-postId="@post.PostId">Go to post...</a>
+                    <a asp-controller="Post" asp-action="Index" asp-route-postId="@post.PostId" class="link-primary">Go to post...</a>
                 </div>
             }
         </div>

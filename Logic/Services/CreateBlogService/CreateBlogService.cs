@@ -7,26 +7,24 @@ namespace Logic.Services.CreateBlogService
     {
         int CreateBlog(string name, string description, User owner);
     }
-    public class CreateBlogService : ICreateBlogService
+    public class CreateBlogService :ServiceTemplate, ICreateBlogService
     {
-        private readonly BlogDbContext _context;
-
-        public CreateBlogService(BlogDbContext context)
-        {
-            _context = context;
-        }
         public int CreateBlog(string name, string description, User owner)
         {
-            owner = _context.Users.FirstOrDefault(e => e.Id == owner.Id) ?? owner;
+            owner = Context.Users.FirstOrDefault(e => e.Id == owner.Id) ?? owner;
             Blog blog = new Blog()
             {
                 BlogName = name,
                 Description = description,
-                Owner = owner
+                OwnerId = owner.Id
             };
-            _context.Add(blog);
-            _context.SaveChanges();
+            Context.Add(blog);
+            Context.SaveChanges();
             return blog.BlogId;
+        }
+
+        public CreateBlogService(BlogDbContext context) : base(context)
+        {
         }
     }
 }

@@ -8,29 +8,27 @@ namespace Logic.Services.AddPostService
     {
         int AddPost(string title, string content, int blogId, string userId);
     }
-    public class AddPostService : IAddPostService
+    public class AddPostService : ServiceTemplate, IAddPostService
     {
-        private readonly BlogDbContext _context;
-
-        public AddPostService(BlogDbContext context)
-        {
-            _context = context;
-        }
         public int AddPost(string title, string content, int blogId, string userId)
         {
-            var blog = _context.Blogs.Include(e=>e.Posts).FirstOrDefault(e => e.BlogId == blogId);
-            var user = _context.Users.FirstOrDefault(e => e.Id == userId);
+            var blog = Context.Blogs.Include(e=>e.Posts).Single(e => e.BlogId == blogId);
+            var user = Context.Users.FirstOrDefault(e => e.Id == userId);
             Post post = new Post()
             {
                 Title = title,
                 PostText = content,
-                Owner = user!,
-                OwningBlog = blog!,
+                OwnerId = user!.Id,
+                OwningBlog = blog,
                 CreatedDate = DateTime.Now,
             };
-            _context.Posts.Add(post);
-            _context.SaveChanges();
+            Context.Posts.Add(post);
+            Context.SaveChanges();
             return post.PostId;
+        }
+
+        public AddPostService(BlogDbContext context) : base(context)
+        {
         }
     }
 }

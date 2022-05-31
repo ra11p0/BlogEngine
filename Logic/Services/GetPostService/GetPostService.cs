@@ -5,19 +5,17 @@ namespace Logic.Services.GetPostService
 {
     public interface IGetPostService
     {
-        Post? GetPostById(int id);
+        Post GetPostById(int id);
     }
-    public class GetPostService : IGetPostService
+    public class GetPostService :ServiceTemplate, IGetPostService
     {
-        private readonly BlogDbContext _context;
-
-        public GetPostService(BlogDbContext context)
+        public Post GetPostById(int id)
         {
-            _context = context;
+            return Context.Posts.First(e => e.PostId == id);
         }
-        public Post? GetPostById(int id)
+
+        public GetPostService(BlogDbContext context) : base(context)
         {
-            return _context.Posts.FirstOrDefault(e => e.PostId == id);
         }
     }
 }

@@ -4,6 +4,7 @@ using DatabaseAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogEngine.Migrations
 {
     [DbContext(typeof(BlogDbContext))]
-    partial class BlogDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220531101034_DeletingPosts")]
+    partial class DeletingPosts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,15 +41,11 @@ namespace BlogEngine.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("BlogId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Blogs");
                 });
@@ -59,9 +57,6 @@ namespace BlogEngine.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"), 1L, 1);
-
-                    b.Property<int?>("CommentId1")
-                        .HasColumnType("int");
 
                     b.Property<string>("CommentText")
                         .IsRequired()
@@ -75,21 +70,16 @@ namespace BlogEngine.Migrations
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("CommentId");
 
-                    b.HasIndex("CommentId1");
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("PostId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Comment");
                 });
@@ -112,8 +102,7 @@ namespace BlogEngine.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("OwningBlogBlogId")
                         .HasColumnType("int");
@@ -126,17 +115,14 @@ namespace BlogEngine.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("Views")
                         .HasColumnType("int");
 
                     b.HasKey("PostId");
 
-                    b.HasIndex("OwningBlogBlogId");
+                    b.HasIndex("OwnerId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("OwningBlogBlogId");
 
                     b.ToTable("Posts");
                 });
@@ -154,7 +140,7 @@ namespace BlogEngine.Migrations
 
                     b.Property<string>("OwnerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("PostId")
                         .HasColumnType("int");
@@ -165,6 +151,8 @@ namespace BlogEngine.Migrations
                     b.HasKey("RateId");
 
                     b.HasIndex("CommentId");
+
+                    b.HasIndex("OwnerId");
 
                     b.HasIndex("PostId");
 
@@ -225,37 +213,41 @@ namespace BlogEngine.Migrations
 
             modelBuilder.Entity("DatabaseAccess.DbModels.Blog", b =>
                 {
-                    b.HasOne("DatabaseAccess.DbModels.User", null)
+                    b.HasOne("DatabaseAccess.DbModels.User", "Owner")
                         .WithMany("Blogs")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("OwnerId");
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("DatabaseAccess.DbModels.Comment", b =>
                 {
-                    b.HasOne("DatabaseAccess.DbModels.Comment", null)
+                    b.HasOne("DatabaseAccess.DbModels.User", "Owner")
                         .WithMany("Comments")
-                        .HasForeignKey("CommentId1");
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DatabaseAccess.DbModels.Post", null)
                         .WithMany("Comments")
                         .HasForeignKey("PostId");
 
-                    b.HasOne("DatabaseAccess.DbModels.User", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId");
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("DatabaseAccess.DbModels.Post", b =>
                 {
+                    b.HasOne("DatabaseAccess.DbModels.User", "Owner")
+                        .WithMany("Posts")
+                        .HasForeignKey("OwnerId");
+
                     b.HasOne("DatabaseAccess.DbModels.Blog", "OwningBlog")
                         .WithMany("Posts")
                         .HasForeignKey("OwningBlogBlogId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DatabaseAccess.DbModels.User", null)
-                        .WithMany("Posts")
-                        .HasForeignKey("UserId");
+                    b.Navigation("Owner");
 
                     b.Navigation("OwningBlog");
                 });
@@ -266,9 +258,17 @@ namespace BlogEngine.Migrations
                         .WithMany("Rates")
                         .HasForeignKey("CommentId");
 
+                    b.HasOne("DatabaseAccess.DbModels.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DatabaseAccess.DbModels.Post", null)
                         .WithMany("Rates")
                         .HasForeignKey("PostId");
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("DatabaseAccess.DbModels.Blog", b =>
@@ -278,8 +278,6 @@ namespace BlogEngine.Migrations
 
             modelBuilder.Entity("DatabaseAccess.DbModels.Comment", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Rates");
                 });
 
